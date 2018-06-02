@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Dost Rider</string>
+    <string name="dost">D O S T</string>
+    <string name="rider">Rider</string>
+    <string name="want_rider_App">LOOKING FOR THE RIDER APP ?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="register">REGISTER</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="phone">Phone NO</string>
+    <string name="profession">Profession</string>
+    <string name="title_activity_booking_rider">Map</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="pin_location">Pin location</string>
+
+    <string name="facebook_app_id">1297334040399814</string>
+    <string name="fb_login_protocol_scheme">fb1297334040399814</string>
+    <string name="expandable_image_icon">Expandable Image Icon</string>
+    <string name="pickup_req">PICKUP REQUEST</string>
+    <string name="rider_account_image">Rider Account image</string>
+    <string name="pickup_point">Pickup Here</string>
+    <string name="opptional">Opptional</string>
+</resources>
