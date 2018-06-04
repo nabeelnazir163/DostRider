@@ -44,6 +44,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.zillion.dostrider.Common.Common;
 import com.zillion.dostrider.Model.Rider;
 
 import dmax.dialog.SpotsDialog;
@@ -109,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         db = FirebaseDatabase.getInstance();
-        users = db.getReference("Riders");
+        users = db.getReference(Common.user_rider_tbl);
         loginThroughFb();
         //google sign in options...
         // Configure Google Sign In
