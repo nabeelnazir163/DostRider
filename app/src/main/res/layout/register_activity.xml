@@ -49,26 +49,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fb_google"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_margin="16dp">
+        android:orientation="vertical"
+        android:layout_margin="30dp">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_signin"
             android:text="@string/sign_in"
+            android:background="@drawable/bg_login_btn"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
             tools:ignore="ButtonStyle" />
 
         <!--android:background="@drawable/btnsign_in"-->
 
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_register"
             android:text="@string/register"
+            android:background="@drawable/bg_register_btn"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
             tools:ignore="ButtonStyle" />
 
         <!--android:background="@drawable/btn_register"-->

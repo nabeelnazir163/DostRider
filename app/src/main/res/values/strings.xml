@@ -3,12 +3,12 @@
     <string name="dost">D O S T</string>
     <string name="rider">Rider</string>
     <string name="want_rider_App">LOOKING FOR THE RIDER APP ?</string>
-    <string name="sign_in">Sign In</string>
+    <string name="sign_in">SIGN IN</string>
     <string name="register">REGISTER</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
     <string name="password">Password</string>
-    <string name="phone">Phone NO</string>
+    <string name="phone">Phone No.</string>
     <string name="profession">Profession</string>
     <string name="title_activity_booking_rider">Map</string>
     <string name="title_activity_home">Home</string>
@@ -27,4 +27,5 @@
     <string name="rider_account_image">Rider Account image</string>
     <string name="pickup_point">Pickup Here</string>
     <string name="opptional">Opptional</string>
+    <string name="sign_out">Sign out</string>
 </resources>

@@ -131,10 +131,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterActivity.this);
+        waitingdialog.show();
     }
 
     //initialization for th evariables......
@@ -189,7 +191,6 @@ public class RegisterActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
 
-                Toast.makeText(getApplicationContext(), "abc", Toast.LENGTH_LONG).show();
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("googlesign_in", "Google sign in failed", e);
@@ -225,7 +226,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
     //for handling facebook token....
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d("checek", "handleFacebookAccessToken:" + token);
@@ -239,7 +239,6 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("check", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(RegisterActivity.this, "Login successfull", Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -254,9 +253,6 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    //update ui
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -269,13 +265,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
-        Toast.makeText(this, "Login successfull", Toast.LENGTH_SHORT).show();
         Intent fb_intent = new Intent(RegisterActivity.this, Home.class);
         startActivity(fb_intent);
-
-
     }
-
 
     //listeners
     public void Listeners() {
@@ -312,18 +304,19 @@ public class RegisterActivity extends AppCompatActivity {
         final MaterialEditText edtpass = view.findViewById(R.id.etPassword);
         final MaterialEditText edtPhone = view.findViewById(R.id.etPhone);
 
+        Button register_button = view.findViewById(R.id.dialog_register_button);
+
         final AlertDialog alertDialog = new AlertDialog.Builder(RegisterActivity.this)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, null)
+//                .setPositiveButton(android.R.string.ok, null)
+//                .setNegativeButton(android.R.string.cancel, null)
                 .show();
 
-        Button positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+//        Button positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+//
+//        Button negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-        Button negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        positive.setOnClickListener(new View.OnClickListener() {
-
+        register_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Do Your thing
@@ -395,13 +388,6 @@ public class RegisterActivity extends AppCompatActivity {
                 });
             }
         });
-
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
     }
 
     public final static boolean isValidEmail(String target) {
@@ -413,7 +399,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //dialogue for login button....
-
     private void showLogindialog() {
 
        /* AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -424,37 +409,37 @@ public class RegisterActivity extends AppCompatActivity {
         final View view = layoutInflater.inflate(R.layout.layout_login, null);
         final MaterialEditText edtlEmail = view.findViewById(R.id.etEmail);
         final MaterialEditText edtlpass = view.findViewById(R.id.etPassword);
+        final Button signin_button = view.findViewById(R.id.login_dialog_Signin_button);
 
 
 //        dialog.setView(view);
         final AlertDialog alertDialoglogin = new AlertDialog.Builder(RegisterActivity.this)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, null)
+//                .setPositiveButton(android.R.string.ok, null)
+//                .setNegativeButton(android.R.string.cancel, null)
                 .show();
 
-        Button positivelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_POSITIVE);
+//        Button positivelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_POSITIVE);
+//
+//        Button negativelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-        Button negativelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        positivelogin.setOnClickListener(new View.OnClickListener() {
+        signin_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                btnsignin.setEnabled(false);
+            public void onClick(final View view) {
 
                 //check validation....
                 if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
-                    Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT);
+                    Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
                     return;
 
                 }
                 if (TextUtils.isEmpty(edtlpass.getText().toString())) {
-                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT);
+                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT).show();
                     return;
 
                 }
                 if (edtlpass.getText().toString().length() < 6) {
-                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT);
+                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT).show();
                     return;
 
                 }
@@ -475,22 +460,18 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         waitingdialog.dismiss();
-                        Snackbar.make(rootlayout, "Failed : " + e.getMessage(), Snackbar.LENGTH_SHORT).
+                        Snackbar.make(view, "Failed : " + e.getMessage(), Snackbar.LENGTH_SHORT).
                                 show();
-                        btnsignin.setEnabled(true);
                     }
                 });
             }
         });
 
-
-        negativelogin.setOnClickListener(new View.OnClickListener() {
+        /*negativelogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialoglogin.dismiss();
             }
-        });
-
-
+        });*/
     }
 }

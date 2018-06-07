@@ -6,4 +6,5 @@
     <color name="your_unselected_text_color">#ffffff</color>
     <color name="your_selected_text_color">#0d161a</color>
     <color name="dividerColor">#1F000000</color>
+    <color name="graycolor">#979393</color>
 </resources>
