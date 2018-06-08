@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -47,9 +47,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 import com.zillion.dostrider.Common.Common;
 import com.zillion.dostrider.Helper.CustomInfoWindow;
+import com.zillion.dostrider.Model.FCMResponse;
+import com.zillion.dostrider.Model.Notification;
 import com.zillion.dostrider.Model.Rider;
+import com.zillion.dostrider.Model.Sender;
+import com.zillion.dostrider.Model.Token;
+import com.zillion.dostrider.Remote.IFCMService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback ,
@@ -91,6 +102,9 @@ public class Home extends AppCompatActivity
     int distance = 3; // 3 km
     private static final int LIMIT = 3;
 
+    //Send Alert
+    IFCMService mService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +129,8 @@ public class Home extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
+
+        mService = Common.getFCMService();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -144,11 +160,82 @@ public class Home extends AppCompatActivity
         btnpickupRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestPickuphere(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                if(!isDriverFound)
+                {
+                    requestPickuphere(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                }else {
+                    sendRequestToDriver(driverId);
+                }
+
             }
         });
 
         setUpLocation();
+        updateFireBaseToken();
+    }
+
+    private void updateFireBaseToken() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference(Common.token_tbl);
+
+        Token token = new Token(FirebaseInstanceId.getInstance().getToken());
+
+        tokens.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(token);
+
+    }
+
+    private void sendRequestToDriver(String driverId) {
+
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference(Common.token_tbl);
+
+        tokens.orderByKey().equalTo(driverId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for( DataSnapshot postSnapShot : dataSnapshot.getChildren())
+                        {
+
+                            Token token = postSnapShot.getValue(Token.class);   //Get token object from database
+
+                            //Make New Payload
+                            String json_lat_lng = new Gson().toJson(new LatLng(mLAstLocation.getLatitude(), mLAstLocation.getLongitude()));
+
+                            Notification data = new Notification("DOST", json_lat_lng);     //send it to driver app and we will deserialize it again
+
+                            Sender content = new Sender(token.getToken(), data);     //Send this data to token
+
+                            mService.sendMessage(content)
+                                    .enqueue(new Callback<FCMResponse>() {
+                                        @Override
+                                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                                            if(response.body().success == 1)
+                                            {
+                                                Toast.makeText(Home.this, "Request Sent", Toast.LENGTH_SHORT).show();
+                                            } else 
+                                            {
+                                                Toast.makeText(Home.this, "Failed", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+                                            Log.e("ERROR", t.getMessage());
+                                        }
+                                    });
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
     private void requestPickuphere(String uid) {
