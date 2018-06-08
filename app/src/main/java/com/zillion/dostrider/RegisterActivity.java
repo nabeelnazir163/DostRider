@@ -11,8 +11,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -83,6 +86,11 @@ public class RegisterActivity extends AppCompatActivity {
                         setFontAttrId(R.attr.fontPath).
                         build());
         setContentView(R.layout.register_activity);
+
+//        Button btn = (Button) findViewById(R.id.btn_signin);
+//        Animation animation1 =
+//                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move);
+//        btn.startAnimation(animation1);
 
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -199,31 +207,52 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount account) {
         Log.d("check", "firebaseAuthWithGoogle:" + account.getId());
 
-//        Toast.makeText(getApplicationContext(), )
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("check", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("check", "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.root_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
 
-                        // ...
+                        //save user to db...
+                        Rider user = new Rider();
+                        user.setEmail(account.getEmail());
+                        user.setName(account.getDisplayName());
+
+                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
+                                setValue(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    Log.d("check", "signInWithCredential:success");
+                                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                    updateUI(firebaseUser);
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Snackbar.make(rootlayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT).
+                                    show();
+                            }
+                        });
+
+                        // Sign in success, update UI with the signed-in user's information
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("check", "signInWithCredential:failure", task.getException());
+                        Snackbar.make(findViewById(R.id.root_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                        updateUI(null);
                     }
-                });
 
+                    // ...
+                }
+            });
     }
 
     //for handling facebook token....
