@@ -63,7 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Home extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback ,
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -105,6 +105,10 @@ public class Home extends AppCompatActivity
     //Send Alert
     IFCMService mService;
 
+//    presence system
+    DatabaseReference driversAvailable;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +132,7 @@ public class Home extends AppCompatActivity
         };
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         mService = Common.getFCMService();
 
@@ -147,7 +151,7 @@ public class Home extends AppCompatActivity
 
         //init View
         imageExpandable = (ImageView) findViewById(R.id.image_Expandable);
-        mBottomsheet =  BottomSheetRiderFragment.newInstance("Rider Bottom Sheet");
+        mBottomsheet = BottomSheetRiderFragment.newInstance("Rider Bottom Sheet");
 
         imageExpandable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,15 +165,16 @@ public class Home extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                if(!isDriverFound)
-                {
+                if (!isDriverFound) {
                     requestPickuphere(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                }else {
+                } else {
                     sendRequestToDriver(driverId);
                 }
 
             }
         });
+
+
 
         setUpLocation();
         updateFireBaseToken();
@@ -195,8 +200,7 @@ public class Home extends AppCompatActivity
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for( DataSnapshot postSnapShot : dataSnapshot.getChildren())
-                        {
+                        for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
 
                             Token token = postSnapShot.getValue(Token.class);   //Get token object from database
 
@@ -211,11 +215,9 @@ public class Home extends AppCompatActivity
                                     .enqueue(new Callback<FCMResponse>() {
                                         @Override
                                         public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-                                            if(response.body().success == 1)
-                                            {
+                                            if (response.body().success == 1) {
                                                 Toast.makeText(Home.this, "Request Sent", Toast.LENGTH_SHORT).show();
-                                            } else 
-                                            {
+                                            } else {
                                                 Toast.makeText(Home.this, "Failed", Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -244,7 +246,7 @@ public class Home extends AppCompatActivity
 
         mGeoFire.setLocation(uid, new GeoLocation(mLAstLocation.getLatitude(), mLAstLocation.getLongitude()));
 
-        if(mUserMarker.isVisible())
+        if (mUserMarker.isVisible())
             mUserMarker.remove();
 
         //Add new Marker
@@ -273,13 +275,12 @@ public class Home extends AppCompatActivity
             public void onKeyEntered(String key, GeoLocation location) {
 
                 //if found
-                if(!isDriverFound)
-                {
+                if (!isDriverFound) {
 
                     isDriverFound = true;
                     driverId = key;
                     btnpickupRequest.setText("CALL DRIVER");
-                    Toast.makeText(Home.this, "" + key , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Home.this, "" + key, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -297,7 +298,7 @@ public class Home extends AppCompatActivity
             public void onGeoQueryReady() {
 
                 //if driver not found Increase radius ...
-                if(!isDriverFound){
+                if (!isDriverFound) {
                     radius++;
                     findDriver();
                 }
@@ -342,6 +343,23 @@ public class Home extends AppCompatActivity
 
         if (mLAstLocation != null) {
 
+            //presense system
+
+            driversAvailable=FirebaseDatabase.getInstance().getReference(Common.driver_tbl);
+            driversAvailable.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //if we have any change from driver table then , we will reload all drivers available ...
+
+                    loadAvailableDrivers();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             final double latitude = mLAstLocation.getLatitude();
             final double longitude = mLAstLocation.getLongitude();
 
@@ -361,6 +379,13 @@ public class Home extends AppCompatActivity
     }
 
     private void loadAvailableDrivers() {
+
+        //        here we delete all markers in map
+        mMap.clear();
+        //now again add fresh location
+        mMap.addMarker(new MarkerOptions().position(new LatLng(mLAstLocation.getLatitude(), mLAstLocation.getLongitude())).
+                title("you"));
+
 
         // Load all available driver in distance 3 km
 
@@ -416,7 +441,7 @@ public class Home extends AppCompatActivity
 
             @Override
             public void onGeoQueryReady() {
-                if(distance <= LIMIT) // distance just find for 3 km
+                if (distance <= LIMIT) // distance just find for 3 km
                 {
                     distance++;
                     loadAvailableDrivers();
