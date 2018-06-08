@@ -21,6 +21,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
+
         TextView textPickupTitle = (TextView) myView.findViewById(R.id.textPickupInfo);
         textPickupTitle.setText(marker.getTitle());
 
