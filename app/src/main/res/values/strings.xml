@@ -20,8 +20,8 @@
     <string name="action_settings">Settings</string>
     <string name="pin_location">Pin location</string>
 
-    <string name="facebook_app_id">1297334040399814</string>
-    <string name="fb_login_protocol_scheme">fb1297334040399814</string>
+    <string name="facebook_app_id">198206267674907</string>
+    <string name="fb_login_protocol_scheme">fb198206267674907</string>
     <string name="expandable_image_icon">Expandable Image Icon</string>
     <string name="pickup_req">PICKUP REQUEST</string>
     <string name="rider_account_image">Rider Account image</string>
