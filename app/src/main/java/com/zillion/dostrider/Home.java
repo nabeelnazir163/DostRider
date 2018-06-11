@@ -218,7 +218,7 @@ public class Home extends AppCompatActivity
                                             if (response.body().success == 1) {
                                                 Toast.makeText(Home.this, "Request Sent", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                Toast.makeText(Home.this, "Failed", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(Home.this, "Failed..", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
@@ -251,7 +251,7 @@ public class Home extends AppCompatActivity
 
         //Add new Marker
         mUserMarker = mMap.addMarker(new MarkerOptions()
-                .title("Pickup Here")
+                .title("Pickup Here..")
                 .snippet("")
                 .position(new LatLng(mLAstLocation.getLatitude(), mLAstLocation.getLongitude()))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
@@ -528,7 +528,9 @@ public class Home extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_signout) {
+
             mAuth.signOut();
+
             LoginManager.getInstance().logOut();
         }
 
