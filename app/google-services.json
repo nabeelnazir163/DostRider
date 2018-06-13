@@ -63,6 +63,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "244889939845-sb20u35ecfasrd3eviaqe7rvk86ahejn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dostrider",
+            "certificate_hash": "e99d12bcf1e94526a0dd07b1f6d8bb3cc9c73f6a"
+          }
+        },
+        {
+          "client_id": "244889939845-sdlp1vns4jm1mfl3s8ao2bgma3ok0psc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dostrider",
+            "certificate_hash": "c9c366703ddfb9e6579ecc3dc1763c31a702d24e"
+          }
+        },
+        {
           "client_id": "244889939845-bk4h5kj4r2ap2rm2gkg6mv6fgk3t369g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

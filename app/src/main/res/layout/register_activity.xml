@@ -105,6 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/txtview_app_reg"
         android:orientation="vertical"
+        android:layout_margin="30dp"
         android:weightSum="2">
 
         <com.facebook.login.widget.LoginButton
@@ -113,11 +114,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
+            android:visibility="gone"
 
             />
         <com.google.android.gms.common.SignInButton
             android:id="@+id/login_google_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"/>
