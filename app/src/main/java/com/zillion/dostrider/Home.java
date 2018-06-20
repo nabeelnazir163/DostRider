@@ -123,7 +123,7 @@ public class Home extends AppCompatActivity
 
                 if (firebaseAuth.getCurrentUser() == null) {
 
-                    Intent googleintent = new Intent(Home.this, RegisterActivity.class);
+                    Intent googleintent = new Intent(Home.this, LoginActivity.class);
                     startActivity(googleintent);
 
                 }

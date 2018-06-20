@@ -11,8 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +45,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.zillion.RegisterActivity;
 import com.zillion.dostrider.Common.Common;
 import com.zillion.dostrider.Model.Rider;
 
@@ -54,9 +53,9 @@ import dmax.dialog.SpotsDialog;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class RegisterActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    Button btnsignin;
+
     Button btnRegister;
     RelativeLayout rootlayout;
     private FirebaseAuth mAuth;
@@ -68,6 +67,16 @@ public class RegisterActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    //
+    TextView register_here;
+    Button signin_button ;
+    MaterialEditText edtlEmail;
+    MaterialEditText edtlpass;
+
+
+
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -85,14 +94,14 @@ public class RegisterActivity extends AppCompatActivity {
                 .setDefaultFontPath("fonts/arkhip.regular.ttf").
                         setFontAttrId(R.attr.fontPath).
                         build());
-        setContentView(R.layout.register_activity);
+        setContentView(R.layout.login_activity);
 
 //        Button btn = (Button) findViewById(R.id.btn_signin);
 //        Animation animation1 =
 //                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move);
 //        btn.startAnimation(animation1);
 
-        mCallbackManager = CallbackManager.Factory.create();
+//        mCallbackManager = CallbackManager.Factory.create();
 
 
         init();
@@ -104,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    Intent googleintent = new Intent(RegisterActivity.this, Home.class);
+                    Intent googleintent = new Intent(LoginActivity.this, Home.class);
                     startActivity(googleintent);
 
 
@@ -113,16 +122,16 @@ public class RegisterActivity extends AppCompatActivity {
         };
 
         if (mAuth.getCurrentUser() != null) {
-            Intent i = new Intent(RegisterActivity.this, Home.class);
+            Intent i = new Intent(LoginActivity.this, Home.class);
             startActivity(i);
         }
 
         db = FirebaseDatabase.getInstance();
         users = db.getReference(Common.user_rider_tbl);
-        loginThroughFb();
+//        loginThroughFb();
         //google sign in options...
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+      /*  GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -130,11 +139,16 @@ public class RegisterActivity extends AppCompatActivity {
                 enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(RegisterActivity.this, "you got some Error..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "you got some Error..", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+                .build();*/
+
+
+        //text view of regsiter here
+
+
 
 
     }
@@ -143,18 +157,24 @@ public class RegisterActivity extends AppCompatActivity {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
-        final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterActivity.this);
+        final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
         waitingdialog.show();
     }
 
     //initialization for th evariables......
     public void init() {
-
+/*
         btnsignin = findViewById(R.id.btn_signin);
-        btnRegister = findViewById(R.id.btn_register);
+        btnRegister = findViewById(R.id.btn_register);*/
         rootlayout = findViewById(R.id.root_layout);
-        mGooglesignin = findViewById(R.id.login_google_btn);
+//        mGooglesignin = findViewById(R.id.login_google_btn);
 //        serviceproviderlayout=findViewById(R.id.service_provider_layout);
+
+        edtlEmail = findViewById(R.id.etEmail);
+        edtlpass = findViewById(R.id.etPassword);
+        register_here=findViewById(R.id.register_screent_txt);
+//        signin_button = findViewById(R.id.login_dialog_Signin_button);
+        signin_button = findViewById(R.id.login_btn);
 
     }
 
@@ -272,7 +292,7 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("check", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, task.getException().getMessage(),
+                            Toast.makeText(LoginActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -294,14 +314,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
-        Intent fb_intent = new Intent(RegisterActivity.this, Home.class);
+        Intent fb_intent = new Intent(LoginActivity.this, Home.class);
         startActivity(fb_intent);
     }
 
     //listeners
     public void Listeners() {
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+       /* btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showRegisterDialog();
@@ -319,6 +339,58 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 signIn();
             }
+        });*/
+
+        signin_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                //check validation....
+                if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
+                    Snackbar.make(v, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+                if (TextUtils.isEmpty(edtlpass.getText().toString())) {
+                    Snackbar.make(v, "Please enter Password", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+                if (edtlpass.getText().toString().length() < 6) {
+                    Snackbar.make(v, "Please enter Password", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
+                waitingdialog.show();
+                //Login.....
+
+                mAuth.signInWithEmailAndPassword(edtlEmail.getText().toString(), edtlpass.getText().toString()).
+                        addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                waitingdialog.show();
+                                startActivity(new Intent(LoginActivity.this, Home.class));
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        waitingdialog.dismiss();
+                        Snackbar.make(v, "Failed : " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+
+//                      Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        signin_button.setEnabled(true);
+                    }
+                });
+            }
+        });
+
+        register_here.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
         });
 
     }
@@ -326,97 +398,7 @@ public class RegisterActivity extends AppCompatActivity {
     //dialogue for the register user....
     private void showRegisterDialog() {
 
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        final View view = layoutInflater.inflate(R.layout.layout_register, null);
-        final MaterialEditText edtEmail = view.findViewById(R.id.etEmail);
-        final MaterialEditText edtusername = view.findViewById(R.id.etName);
-        final MaterialEditText edtpass = view.findViewById(R.id.etPassword);
-        final MaterialEditText edtPhone = view.findViewById(R.id.etPhone);
 
-        Button register_button = view.findViewById(R.id.dialog_register_button);
-
-        final AlertDialog alertDialog = new AlertDialog.Builder(RegisterActivity.this)
-                .setView(view)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-
-//        Button positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-//
-//        Button negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        register_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Do Your thing
-
-                if (TextUtils.isEmpty(edtEmail.getText().toString())) {
-                    Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!isValidEmail(edtEmail.getText().toString())) {
-                    Snackbar.make(view, "Please enter Valid Email Address", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(edtusername.getText().toString())) {
-                    Snackbar.make(view, "Please enter Username", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(edtpass.getText().toString())) {
-                    Snackbar.make(view, "Please enter Password", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-                if ((edtpass.getText().toString()).length() < 6) {
-                    Snackbar.make(view, "Please enter Password of 6 characters or numbers.", Snackbar.LENGTH_SHORT);
-                    return;
-                }
-
-                if (TextUtils.isEmpty(edtPhone.getText().toString())) {
-                    Snackbar.make(view, "Please enter Phone Number", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //register new user.....
-
-                mAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtpass.getText().toString())
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-
-                                //save user to db...
-                                Rider user = new Rider();
-                                user.setEmail(edtEmail.getText().toString());
-                                user.setName(edtusername.getText().toString());
-                                user.setPassword(edtpass.getText().toString());
-                                user.setPhone(edtPhone.getText().toString());
-
-                                users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
-                                        setValue(user)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Snackbar.make(rootlayout, "Registered Successfully", Snackbar.LENGTH_SHORT).
-                                                        show();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Snackbar.make(rootlayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT).
-                                                show();
-                                    }
-                                });
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Snackbar.make(rootlayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT).
-                                show();
-                    }
-                });
-            }
-        });
     }
 
     public final static boolean isValidEmail(String target) {
@@ -430,77 +412,6 @@ public class RegisterActivity extends AppCompatActivity {
     //dialogue for login button....
     private void showLogindialog() {
 
-       /* AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Login");
-        dialog.setMessage("Please Enter Email for SignIn....");*/
 
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        final View view = layoutInflater.inflate(R.layout.layout_login, null);
-        final MaterialEditText edtlEmail = view.findViewById(R.id.etEmail);
-        final MaterialEditText edtlpass = view.findViewById(R.id.etPassword);
-        final Button signin_button = view.findViewById(R.id.login_dialog_Signin_button);
-
-
-//        dialog.setView(view);
-        final AlertDialog alertDialoglogin = new AlertDialog.Builder(RegisterActivity.this)
-                .setView(view)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-
-//        Button positivelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_POSITIVE);
-//
-//        Button negativelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        signin_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-
-                //check validation....
-                if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
-                    Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
-                    return;
-
-                }
-                if (TextUtils.isEmpty(edtlpass.getText().toString())) {
-                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT).show();
-                    return;
-
-                }
-                if (edtlpass.getText().toString().length() < 6) {
-                    Snackbar.make(rootlayout, "Please enter Password", Snackbar.LENGTH_SHORT).show();
-                    return;
-
-                }
-
-                final android.app.AlertDialog waitingdialog=new SpotsDialog(RegisterActivity.this);
-                waitingdialog.show();
-                //Login.....
-
-                mAuth.signInWithEmailAndPassword(edtlEmail.getText().toString(), edtlpass.getText().toString()).
-                        addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                waitingdialog.show();
-                                startActivity(new Intent(RegisterActivity.this, Home.class));
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        waitingdialog.dismiss();
-                        Snackbar.make(view, "Failed : " + e.getMessage(), Snackbar.LENGTH_SHORT).
-                                show();
-                    }
-                });
-            }
-        });
-
-        /*negativelogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialoglogin.dismiss();
-            }
-        });*/
     }
 }
